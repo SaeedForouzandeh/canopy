@@ -1,0 +1,97 @@
+{% extends 'dashboard/base.html' %}{% load canopy_tags %}
+{% block content %}
+<div class="page-heading">
+<div>
+<div class="eyebrow">YOUR WORK, IN PERSPECTIVE</div>
+<h1>{% if section == 'overview' %}یک روز خوب برای خلق کردن <span class="heading-star">✳</span>{% else %}{{ title }}{% endif %}</h1>
+<p>اطلاعات واقعی فضای کار شما؛ دقیق، یکپارچه و به‌روز.</p>
+</div>
+<div class="heading-actions">
+<span class="date-chip">
+<svg>
+<use href="#calendar"/>
+</svg>{{ today|date:'Y/m/d' }}</span>{% if section == 'invoices' and perms.dashboard.add_invoice %}<a class="button primary" href="{% url 'record_create' 'invoice' %}">+ صورتحساب جدید</a>{% elif section == 'tasks' and perms.dashboard.add_task %}<a class="button primary" href="{% url 'record_create' 'task' %}">+ کار جدید</a>{% elif section == 'expenses' and perms.dashboard.add_expense %}<a class="button primary" href="{% url 'record_create' 'expense' %}">+ هزینه جدید</a>{% elif section == 'calendar' and perms.dashboard.add_event %}<a class="button primary" href="{% url 'record_create' 'event' %}">+ رویداد جدید</a>{% elif perms.dashboard.add_project %}<a class="button primary" href="{% url 'project_create' %}">
+<span>+</span> پروژه جدید</a>{% endif %}</div>
+</div>
+{% if section == 'overview' %}<section class="welcome-banner">
+<div>
+<span class="banner-kicker">
+<i>
+</i> A LITTLE CLARITY. A LOT OF POSSIBILITY.</span>
+<h2>ایده‌های بزرگ، از اینجا رشد می‌کنند.</h2>
+<p>{% if user.is_authenticated %}{{ user_display }}، به فضای کاری‌تان خوش آمدید.{% else %}یک نمای روشن از امروز؛ یک قدم مطمئن برای فردا.{% endif %}</p>
+<a href="/projects/">بریم سراغ پروژه‌ها ←</a>
+</div>
+<div class="banner-art" aria-hidden="true">
+<span class="orbit one">
+</span>
+<span class="orbit two">
+</span>
+<span class="orbit three">
+</span>
+<span class="art-star">✳</span>
+<span class="art-spark">✧</span>
+<span class="art-dot">
+</span>
+<small>GROW WITH INTENTION</small>
+</div>
+</section>{% endif %}
+{% if section == 'overview' or section == 'analytics' %}{% include 'dashboard/partials/stats.html' %}<div class="summary-export"><a class="button secondary compact" href="{% url 'report_export' %}?months={{ months }}">↓ خروجی CSV گزارش {{ months }} ماهه</a></div>{% include 'dashboard/partials/charts.html' %}{% endif %}
+{% if section == 'overview' or section == 'projects' %}{% include 'dashboard/partials/projects.html' %}{% endif %}
+{% if section == 'overview' %}<div class="bottom-grid">
+<section class="panel">
+<div class="panel-heading">
+<div>
+<h2>کارهای باز</h2>
+<p>{{ completed_task_count|money }} کار تکمیل شده از {{ task_count|money }} کار</p>
+</div>
+<a class="text-link" href="/tasks/">مدیریت کارها ←</a>
+</div>
+<div class="task-list">{% for task in tasks %}<div class="task-row">{% if perms.dashboard.change_task %}<form method="post" action="{% url 'task_toggle' task.pk %}">{% csrf_token %}<button class="task-check" aria-label="تکمیل {{ task.title }}">
+</button>
+</form>{% else %}<span class="task-check">
+</span>{% endif %}<span>{{ task.title }}{% if task.assignee %}<small class="muted"> · {{ task.assignee.get_full_name|default:task.assignee.username }}</small>{% endif %}</span>
+<span class="task-time">{{ task.due_date|date:'m/d'|default:'بدون موعد' }}</span>
+</div>{% empty %}<div class="empty">هیچ کار بازی وجود ندارد.{% if perms.dashboard.add_task %}<a href="{% url 'record_create' 'task' %}"> ثبت اولین کار ←</a>{% endif %}</div>{% endfor %}</div>
+</section>
+<section class="panel">
+<div class="panel-heading">
+<div>
+<h2>آخرین فعالیت‌ها</h2>
+<p>تغییرات ثبت‌شده در فضای کار</p>
+</div>
+<span class="live-label">
+<i>
+</i>زنده</span>
+</div>
+<div class="activity-list">{% for activity in activities %}<div class="activity-row">
+<span class="activity-dot">
+</span>
+<div>{{ activity.description }}<small>{{ activity.actor|display_name }} · {{ activity.created_at|date:'m/d H:i' }}</small>
+</div>
+</div>{% empty %}<div class="empty">بعد از ثبت یا ویرایش اطلاعات، فعالیت‌ها اینجا نمایش داده می‌شوند.</div>{% endfor %}</div>
+</section>
+</div>{% endif %}
+{% if section == 'analytics' %}<div class="stats-grid">
+<article class="stat-card">
+<div class="stat-top">درآمد این بازه · تومان</div>
+<div class="stat-value">{{ period_revenue|money }}</div>
+</article>
+<article class="stat-card">
+<div class="stat-top">هزینه این بازه · تومان</div>
+<div class="stat-value">{{ period_expense|money }}</div>
+</article>
+<article class="stat-card">
+<div class="stat-top">خالص این بازه · تومان</div>
+<div class="stat-value">{{ net_income|money }}</div>
+</article>
+<article class="stat-card">
+<div class="stat-top">مقایسه با بازه قبلی</div>
+<div class="stat-value">{% if growth is not None %}{{ growth }}٪{% else %}—{% endif %}</div>
+<small class="muted">{% if growth is None %}بازه قبلی درآمدی نداشته است.{% else %}بر اساس تاریخ پرداخت{% endif %}</small>
+</article>
+</div>{% endif %}
+{% if section == 'invoices' or section == 'expenses' or section == 'tasks' %}{% include 'dashboard/partials/records.html' %}{% endif %}
+{% if section == 'calendar' %}{% include 'dashboard/partials/calendar.html' %}{% endif %}
+{% if section == 'components' %}{% include 'dashboard/partials/components.html' %}{% endif %}
+{% endblock %}

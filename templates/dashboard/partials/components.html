@@ -1,0 +1,36 @@
+{% load canopy_tags %}<div class="component-grid">
+<section class="panel component-card">
+<h2>دکمه‌ها و وضعیت‌ها</h2>
+<p>اجزای طراحی برای استفاده در صفحات شما</p>
+<div class="component-row">
+<a class="button primary" href="/projects/">پروژه‌ها ←</a>
+<a class="button secondary" href="/invoices/">صورتحساب‌ها</a>
+<span class="status active">در حال انجام</span>
+<span class="status review">در انتظار بررسی</span>
+<span class="status done">تکمیل شده</span>
+</div>
+</section>
+<section class="panel component-card">
+<h2>هویت بصری</h2>
+<div class="swatches">
+<div style="background:#0a1f17">Forest<small>#0A1F17</small>
+</div>
+<div style="background:#c9a45a;color:#0a1f17">Gold<small>#C9A45A</small>
+</div>
+<div style="background:#f7f8fa;color:#0a1f17">Canvas<small>#F7F8FA</small>
+</div>
+</div>
+</section>
+<section class="panel component-card">
+<h2>بازخورد رابط</h2>
+<p>برای بررسی ظاهر اعلان، دکمه زیر را بزنید.</p>
+<button class="button secondary" data-toast="این اعلان برای بررسی ظاهر رابط است.">نمایش اعلان رابط</button>
+</section>
+<section class="panel component-card">
+<h2>آمار واقعی کارها</h2>
+<p>{{ completed_task_count|money }} کار تکمیل شده از {{ task_count|money }} کار</p>
+<div class="component-row">
+<a class="button primary" href="/tasks/">مدیریت کارها ←</a>
+</div>
+</section>
+</div>

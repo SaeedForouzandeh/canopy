@@ -1,0 +1,23 @@
+{% extends 'dashboard/base.html' %}{% load canopy_tags %}{% block content %}<div class="page-heading">
+<div>
+<div class="eyebrow">BETTER WORK, TOGETHER</div>
+<h1>اعضای تیم</h1>
+<p>اعضای فعال، پروژه‌ها و کارهای اختصاص‌یافته به هر نفر</p>
+</div>{% if perms.auth.add_user %}<a class="button primary" href="{% url 'admin:auth_user_add' %}">+ افزودن عضو</a>{% endif %}</div>
+<form method="get" class="filters-bar">
+<input name="q" value="{{ query }}" placeholder="نام یا نام کاربری…" aria-label="جستجوی اعضا">
+<button class="button primary">جستجو</button>
+</form>
+<div class="team-grid">{% for member in page_obj %}<article class="panel team-card">
+<span class="avatar">{{ member|display_name|first }}</span>
+<h2>{{ member|display_name }}</h2>
+<small class="muted">{{ member.username }}</small>
+<div class="component-row">
+<span class="status">{% if member.is_superuser %}مدیر کل{% elif member.is_staff %}مدیر{% else %}عضو{% endif %}</span>
+</div>
+<div class="team-stats">
+<span>{{ member.project_total|money }} پروژه</span>
+<span>{{ member.task_total|money }} کار باز</span>
+</div>
+<div class="row-actions">{% if member.pk != user.pk %}<a href="/messages/?with={{ member.pk }}">ارسال پیام ←</a>{% endif %}{% if perms.auth.change_user %}<a href="{% url 'admin:auth_user_change' member.pk %}">مدیریت / مجوزها</a>{% endif %}</div>
+</article>{% empty %}<div class="empty">عضوی با این مشخصات پیدا نشد.</div>{% endfor %}</div>{% include 'dashboard/partials/pagination.html' %}{% endblock %}

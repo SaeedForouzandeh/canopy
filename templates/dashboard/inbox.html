@@ -1,0 +1,38 @@
+{% extends 'dashboard/base.html' %}{% block content %}<div class="page-heading">
+<div>
+<div class="eyebrow">CONVERSATIONS THAT MOVE WORK FORWARD</div>
+<h1>پیام‌های خصوصی</h1>
+<p>گفتگوهای ذخیره‌شده بین اعضای واقعی فضای کار</p>
+</div>
+</div>
+<section class="panel chat-panel">
+<aside class="chat-contacts">
+<h2>اعضای فضای کار</h2>
+<form method="get" class="contact-search">
+<input name="q" value="{{ request.GET.q }}" placeholder="جستجوی کاربر…" aria-label="جستجوی کاربر">
+<button class="text-button">جستجو</button>
+</form>{% for contact in contacts %}<a class="contact {% if contact.pk == peer.pk %}active{% endif %}" href="?with={{ contact.pk }}">
+<span class="avatar">{{ contact.get_full_name|default:contact.username|first }}</span>
+<div>{{ contact.get_full_name|default:contact.username }}<small>{{ contact.username }}</small>
+</div>
+</a>{% empty %}<p class="empty">کاربر دیگری وجود ندارد. اعضا را از ادمین اضافه کنید.</p>{% endfor %}</aside>
+<div class="chat-body">{% if peer %}<div class="chat-header">
+<span class="avatar">{{ peer.get_full_name|default:peer.username|first }}</span>
+<div>
+<strong>{{ peer.get_full_name|default:peer.username }}</strong>
+<small>پیام‌ها به‌صورت دوره‌ای به‌روز می‌شوند.</small>
+</div>
+<span id="chat-connection" class="muted">
+</span>
+</div>
+<div class="chat-log" id="chat-log" data-peer="{{ peer.pk }}" data-last-id="{{ last_message_id }}" data-poll="{% if history.number == 1 %}1{% else %}0{% endif %}" aria-live="polite">{% if history.has_next %}<a class="text-link" href="?with={{ peer.pk }}&page={{ history.next_page_number }}">پیام‌های قدیمی‌تر ↑</a>{% endif %}{% if history.has_previous %}<a class="text-link" href="?with={{ peer.pk }}">بازگشت به جدیدترین پیام‌ها</a>{% endif %}{% for item in chat_messages %}<div class="bubble {% if item.sender_id == user.pk %}outgoing{% endif %}" data-message-id="{{ item.pk }}">{{ item.body|linebreaksbr }}<small>{{ item.sent_at|date:'Y/m/d H:i' }}{% if item.sender_id == user.pk and item.read_at %} · خوانده شده{% endif %}</small>
+</div>{% empty %}<div class="empty" id="empty-chat">هنوز پیامی بین شما ثبت نشده است.</div>{% endfor %}</div>
+<form method="post" class="chat-compose" id="message-compose">{% csrf_token %}<input type="hidden" name="recipient" value="{{ peer.pk }}">{{ message_form.body.errors }}<textarea name="body" maxlength="4000" placeholder="پیام خود را بنویسید…" required rows="2" aria-label="متن پیام">
+</textarea>
+<button class="button primary">ارسال ←</button>
+</form>{% else %}<div class="empty chat-empty">
+<span class="gold-text">✧</span>
+<h2>یک گفتگو را شروع کنید.</h2>
+<p>یکی از اعضای فضای کار را انتخاب کنید.</p>
+</div>{% endif %}</div>
+</section>{% endblock %}

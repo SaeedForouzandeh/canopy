@@ -1,0 +1,67 @@
+{% load canopy_tags %}<section class="panel">
+<div class="panel-heading">
+<div>
+<h2>{{ title }}</h2>
+<p>{% if section == 'tasks' %}برنامه‌ریزی، تعیین مسئول و پیگیری کارها{% else %}همه مبالغ به تومان هستند{% endif %}</p>
+</div>{% if section == 'invoices' %}<a class="button secondary" href="{% url 'invoice_export' %}?{{ request.GET.urlencode }}">↓ خروجی CSV</a>{% endif %}</div>{% include 'dashboard/partials/filters.html' %}{% include 'dashboard/partials/bulk_toolbar.html' %}<div class="table-scroll">
+<table>
+<thead>
+<tr>{% if section == 'tasks' and perms.dashboard.change_task or section == 'invoices' and perms.dashboard.change_invoice %}<th class="bulk-cell"><input class="bulk-checkbox" type="checkbox" id="select-all-records" aria-label="انتخاب همه رکوردهای این صفحه"></th>{% endif %}{% if section == 'invoices' %}<th>شماره / مشتری</th>
+<th>مبلغ</th>
+<th>وضعیت</th>
+<th>تاریخ صدور / پرداخت</th>
+<th>مهلت</th>{% elif section == 'expenses' %}<th>عنوان</th>
+<th>مبلغ</th>
+<th>دسته‌بندی</th>
+<th>تاریخ</th>
+<th>پروژه</th>{% else %}<th>کار</th>
+<th>مسئول</th>
+<th>اولویت</th>
+<th>موعد</th>
+<th>وضعیت</th>{% endif %}<th>عملیات</th>
+</tr>
+</thead>
+<tbody>{% for item in items %}<tr>{% if section == 'tasks' and perms.dashboard.change_task or section == 'invoices' and perms.dashboard.change_invoice %}<td class="bulk-cell"><input class="bulk-checkbox record-checkbox" type="checkbox" name="ids" value="{{ item.pk }}" form="bulk-form" aria-label="انتخاب {{ item }}"></td>{% endif %}{% if section == 'invoices' %}<td>
+<a href="{% url 'invoice_detail' item.pk %}">
+<strong dir="ltr">{{ item.number }}</strong>
+<small class="table-subtitle">{{ item.client }}</small>
+</a>
+</td>
+<td>{{ item.amount|money }}</td>
+<td>
+<span class="status {% if item.status == 'paid' %}done{% else %}review{% endif %}">{{ item.get_status_display }}</span>
+</td>
+<td>{{ item.issued_at|date:'Y/m/d' }}<small class="table-subtitle">{% if item.paid_at %}پرداخت: {{ item.paid_at|date:'Y/m/d' }}{% else %}پرداخت نشده{% endif %}</small>
+</td>
+<td>{{ item.due_date|date:'Y/m/d'|default:'—' }}</td>
+<td>
+<div class="row-actions">
+<a href="{% url 'invoice_detail' item.pk %}">مشاهده / چاپ</a>{% if perms.dashboard.change_invoice %}<a href="{% url 'record_edit' 'invoice' item.pk %}">ویرایش</a>{% if item.status == 'pending' %}<form method="post" action="{% url 'invoice_pay' item.pk %}">{% csrf_token %}<button class="text-button">ثبت پرداخت</button>
+</form>{% endif %}{% endif %}{% if perms.dashboard.delete_invoice %}<a class="danger-text" href="{% url 'record_delete' 'invoice' item.pk %}">حذف</a>{% endif %}</div>
+</td>{% elif section == 'expenses' %}<td>{{ item.title }}</td>
+<td>{{ item.amount|money }}</td>
+<td>{{ item.category }}</td>
+<td>{{ item.spent_at|date:'Y/m/d' }}</td>
+<td>{{ item.project|default:'—' }}</td>
+<td>
+<div class="row-actions">{% if perms.dashboard.change_expense %}<a href="{% url 'record_edit' 'expense' item.pk %}">ویرایش</a>{% endif %}{% if perms.dashboard.delete_expense %}<a class="danger-text" href="{% url 'record_delete' 'expense' item.pk %}">حذف</a>{% endif %}</div>
+</td>{% else %}<td>{{ item.title }}<small class="table-subtitle">{{ item.project|default:'بدون پروژه' }}</small>
+</td>
+<td>{{ item.assignee|display_name }}</td>
+<td>
+<span class="priority {{ item.priority }}">{{ item.get_priority_display }}</span>
+</td>
+<td>{{ item.due_date|date:'Y/m/d'|default:'—' }}</td>
+<td>
+<span class="status {% if item.completed %}done{% else %}active{% endif %}">{% if item.completed %}تکمیل شده{% else %}باز{% endif %}</span>
+</td>
+<td>
+<div class="row-actions">{% if perms.dashboard.change_task %}<form method="post" action="{% url 'task_toggle' item.pk %}">{% csrf_token %}<input type="hidden" name="return_to" value="tasks">
+<button class="text-button">{% if item.completed %}بازگشایی{% else %}تکمیل{% endif %}</button>
+</form>
+<a href="{% url 'record_edit' 'task' item.pk %}">ویرایش</a>{% endif %}{% if perms.dashboard.delete_task %}<a class="danger-text" href="{% url 'record_delete' 'task' item.pk %}">حذف</a>{% endif %}</div>
+</td>{% endif %}</tr>{% empty %}<tr>
+<td colspan="6" class="empty">رکوردی با این شرایط وجود ندارد.</td>
+</tr>{% endfor %}</tbody>
+</table>
+</div>{% include 'dashboard/partials/pagination.html' %}</section>

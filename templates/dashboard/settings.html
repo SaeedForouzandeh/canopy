@@ -1,0 +1,17 @@
+{% extends 'dashboard/base.html' %}{% block content %}<div class="page-heading">
+<div>
+<div class="eyebrow">YOUR PERSONAL SPACE</div>
+<h1>تنظیمات حساب و نمایش</h1>
+<p>تنظیمات روی حساب شما ذخیره می‌شوند و در دستگاه‌های دیگر هم در دسترس‌اند.</p>
+</div>
+</div>
+<section class="panel settings-panel">
+<h2>پروفایل و ترجیحات</h2>
+<form method="post" class="form-fields" id="account-settings">{% csrf_token %}{{ profile_form.as_p }}{{ preference_form.as_p }}<button class="button primary">ذخیره تغییرات</button>
+</form>
+<div class="settings-info">
+<h3>امنیت حساب</h3>
+<p>رمز عبور خود را از فرم امن جنگو تغییر دهید.</p>
+<a class="button secondary" href="{% url 'password_change' %}">تغییر رمز عبور</a>
+</div>
+</section>{% endblock %}

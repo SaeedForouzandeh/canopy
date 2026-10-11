@@ -1,0 +1,7 @@
+{% if section == 'tasks' and perms.dashboard.change_task or section == 'invoices' and perms.dashboard.change_invoice %}
+<form method="post" action="{% url 'bulk_update' record_kind %}" class="bulk-toolbar" id="bulk-form">
+{% csrf_token %}<span>عملیات گروهی</span><span class="bulk-count" id="bulk-count">رکوردهای همین صفحه را انتخاب کنید.</span>
+<select name="action" id="bulk-action" aria-label="عملیات گروهی">{% if section == 'tasks' %}<option value="complete">تکمیل کارها</option><option value="reopen">بازگشایی کارها</option><option value="assign">تعیین مسئول</option>{% else %}<option value="paid">ثبت پرداخت صورتحساب‌ها</option>{% endif %}</select>
+{% if section == 'tasks' %}<label id="bulk-assignee">مسئول <select name="assignee" aria-label="مسئول کارهای انتخاب‌شده"><option value="">انتخاب کنید</option>{% for assignee in assignees %}<option value="{{ assignee.pk }}">{{ assignee.get_full_name|default:assignee.username }}</option>{% endfor %}</select></label>{% endif %}
+<button class="button primary compact" id="bulk-submit">اعمال به انتخاب‌شده‌ها</button></form>
+{% endif %}

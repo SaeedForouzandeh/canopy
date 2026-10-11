@@ -1,0 +1,15 @@
+{% extends 'dashboard/base.html' %}{% block content %}<div class="page-heading">
+<div>
+<h1>اعلان‌ها</h1>
+<p>پیام‌ها، رویدادها و کارهای اختصاص‌یافته به شما</p>
+</div>
+<form method="post" action="{% url 'notifications_read_all' %}">{% csrf_token %}<button class="button secondary">خواندن همه</button>
+</form>
+</div>
+<section class="panel">
+<div class="notification-list">{% for item in page_obj %}<article class="notification-row {% if not item.read_at %}unread{% endif %}">
+<div>
+<a href="{{ item.url|default:'/notifications/' }}">{{ item.title }}</a>
+<small>{{ item.created_at|date:'Y/m/d H:i' }}</small>
+</div>{% if not item.read_at %}<form method="post" action="{% url 'notification_read' item.pk %}">{% csrf_token %}<button class="text-button">خوانده شد ✓</button>
+</form>{% else %}<small class="muted">خوانده شده</small>{% endif %}</article>{% empty %}<div class="empty">اعلانی برای شما ثبت نشده است.</div>{% endfor %}</div>{% include 'dashboard/partials/pagination.html' %}</section>{% endblock %}

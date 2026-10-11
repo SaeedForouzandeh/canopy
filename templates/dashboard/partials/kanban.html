@@ -1,0 +1,22 @@
+{% load canopy_tags %}
+<div class="kanban-grid">
+{% for column in board_columns %}
+<section class="kanban-column" data-status="{{ column.status }}" aria-label="{{ column.label }}">
+<div class="kanban-title"><strong>{{ column.label }}</strong><span class="count-badge">{{ column.count|money }}</span></div>
+{% for project in column.page %}
+<article class="kanban-card" data-project-id="{{ project.pk }}" data-status="{{ project.status }}" {% if perms.dashboard.change_project %}draggable="true"{% endif %}>
+<h3><a href="{% url 'project_detail' project.pk %}">{{ project.name }}</a></h3>
+<p>{{ project.client }} · {{ project.category }}</p>
+<div class="progress-track"><i style="width:{{ project.progress }}%"></i></div>
+<div class="kanban-meta"><span>{{ project.progress|money }}٪</span><span>{{ project.due_date|date:'Y/m/d' }}</span></div>
+<div class="kanban-meta"><span>بودجه</span><span>{{ project.budget|money }} تومان</span></div>
+<div class="avatar-stack">{% for member in project.members.all %}<span title="{{ member|display_name }}">{{ member|display_name|first }}</span>{% empty %}<small class="muted">بدون عضو</small>{% endfor %}</div>
+{% if perms.dashboard.change_project %}
+<form method="post" action="{% url 'project_status' project.pk %}" class="kanban-status-form">
+{% csrf_token %}<input type="hidden" name="expected_status" value="{{ project.status }}">
+<select name="status" aria-label="وضعیت {{ project.name }}"><option value="active" {% if project.status == 'active' %}selected{% endif %}>در حال انجام</option><option value="review" {% if project.status == 'review' %}selected{% endif %}>در انتظار بررسی</option><option value="done" {% if project.status == 'done' %}selected{% endif %}>تکمیل شده</option></select>
+<button class="button secondary compact">ذخیره</button></form>{% endif %}
+</article>{% empty %}<p class="empty">پروژه‌ای در این ستون نیست.</p>{% endfor %}
+<nav class="pagination" aria-label="صفحه‌بندی {{ column.label }}">{% if column.previous_url %}<a class="button secondary compact" href="{{ column.previous_url }}">قبلی</a>{% endif %}{% if column.next_url %}<a class="button secondary compact" href="{{ column.next_url }}">بعدی</a>{% endif %}</nav>
+</section>{% endfor %}
+</div>

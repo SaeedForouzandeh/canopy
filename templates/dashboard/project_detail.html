@@ -1,0 +1,70 @@
+{% extends 'dashboard/base.html' %}{% load canopy_tags %}{% block content %}<div class="page-heading">
+<div>
+<div class="eyebrow">PROJECT WORKSPACE</div>
+<h1>{{ project.name }}</h1>
+<p>{{ project.client }} · {{ project.category }}</p>
+</div>
+<div class="heading-actions">{% if perms.dashboard.change_project %}<a class="button primary" href="{% url 'record_edit' 'project' project.pk %}">ویرایش پروژه</a>{% endif %}<a class="button secondary" href="/projects/">بازگشت</a>
+</div>
+</div>
+<div class="stats-grid">
+<article class="stat-card">
+<div class="stat-top">وضعیت</div>
+<div class="component-row">
+<span class="status {{ project.status }}">{{ project.get_status_display }}</span>
+</div>
+<p class="muted">موعد: {{ project.due_date|date:'Y/m/d' }}</p>
+</article>
+<article class="stat-card">
+<div class="stat-top">پیشرفت</div>
+<div class="stat-value">{{ project.progress|money }}٪</div>
+<div class="progress-track">
+<i style="width:{{ project.progress }}%">
+</i>
+</div>
+</article>
+<article class="stat-card">
+<div class="stat-top">وصول‌شده · تومان</div>
+<div class="stat-value">{{ received|money }}</div>
+<small class="muted">بودجه: {{ project.budget|money }}</small>
+</article>
+<article class="stat-card">
+<div class="stat-top">هزینه · تومان</div>
+<div class="stat-value">{{ cost|money }}</div>
+</article>
+</div>
+<section class="panel component-card">
+<h2>توضیحات و تیم</h2>
+<div class="project-description">{{ project.description|linebreaks|default:'توضیحی ثبت نشده است.' }}</div>
+<div class="component-row">{% for member in project.members.all %}<span class="member-chip">
+<span class="avatar">{{ member.get_full_name|default:member.username|first }}</span>{{ member.get_full_name|default:member.username }}</span>{% empty %}<span class="muted">عضوی تعیین نشده است.</span>{% endfor %}</div>
+</section>
+<div class="bottom-grid detail-grid">
+<section class="panel">
+<div class="panel-heading">
+<h2>کارهای پروژه</h2>
+<a class="text-link" href="/tasks/">همه کارها ←</a>
+</div>
+<div class="task-list">{% for task in project_tasks %}<div class="task-row">
+<span class="status {% if task.completed %}done{% else %}active{% endif %}">{% if task.completed %}✓{% else %}○{% endif %}</span>{{ task.title }}<span class="task-time">{{ task.due_date|date:'Y/m/d'|default:'—' }}</span>
+</div>{% empty %}<p class="empty">کاری به این پروژه وصل نشده است.</p>{% endfor %}</div>
+</section>
+<section class="panel">
+<div class="panel-heading">
+<h2>صورتحساب‌های پروژه</h2>
+<a class="text-link" href="/invoices/">همه صورتحساب‌ها ←</a>
+</div>
+<div class="task-list">{% for invoice in project_invoices %}<a class="task-row" href="{% url 'invoice_detail' invoice.pk %}">
+<span dir="ltr">{{ invoice.number }}</span>
+<span>{{ invoice.amount|money }} تومان</span>
+<span class="status">{{ invoice.get_status_display }}</span>
+</a>{% empty %}<p class="empty">صورتحسابی به این پروژه وصل نشده است.</p>{% endfor %}</div>
+</section>
+</div>
+<section class="panel detail-grid">
+<div class="panel-heading"><h2>هزینه‌های پروژه</h2><a class="text-link" href="/expenses/">مدیریت هزینه‌ها ←</a></div>
+<div class="table-scroll"><table><thead><tr><th>عنوان</th><th>دسته‌بندی</th><th>تاریخ</th><th>مبلغ (تومان)</th></tr></thead>
+<tbody>{% for expense in project_expenses %}<tr><td>{{ expense.title }}</td><td>{{ expense.category }}</td><td>{{ expense.spent_at|date:'Y/m/d' }}</td><td>{{ expense.amount|money }}</td></tr>{% empty %}<tr><td colspan="4" class="empty">هزینه‌ای به این پروژه وصل نشده است.</td></tr>{% endfor %}</tbody></table></div>
+</section>
+{% include 'dashboard/partials/project_comments.html' %}
+{% endblock %}

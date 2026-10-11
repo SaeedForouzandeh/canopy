@@ -1,0 +1,74 @@
+{% load canopy_tags %}
+<div class="charts-grid">
+<section class="panel revenue-panel">
+<div class="panel-heading">
+<div>
+<h2>روند درآمد و هزینه</h2>
+<p>تاریخ پرداخت صورتحساب‌ها و هزینه‌های ثبت‌شده · تومان</p>
+</div>
+<form method="get" class="period-form">
+<label class="sr-only" for="chart-period">بازه گزارش</label>
+<select id="chart-period" name="months">
+<option value="3" {% if months == 3 %}selected{% endif %}>۳ ماه گذشته</option>
+<option value="6" {% if months == 6 %}selected{% endif %}>۶ ماه گذشته</option>
+<option value="12" {% if months == 12 %}selected{% endif %}>۱۲ ماه گذشته</option>
+</select>
+<button class="button secondary compact">اعمال</button>
+</form>
+</div>
+<div class="chart-meta">
+<div>
+<strong>{{ period_revenue|money }}</strong>
+<span>تومان درآمد</span>
+<small>{% if growth is not None %}{{ growth }}٪ نسبت به بازه قبلی{% else %}بازه قبلی درآمد ثبت‌شده ندارد{% endif %}</small>
+</div>
+<div class="legend">
+<span>
+<i class="green-dot">
+</i>درآمد</span>
+<span>
+<i class="gold-dot">
+</i>هزینه</span>
+</div>
+</div>{{ chart_data|json_script:'financial-data' }}<div class="real-chart" id="financial-chart" role="img" aria-label="نمودار درآمد و هزینه ثبت‌شده">
+</div>
+<div class="chart-caption">{% if period_revenue == 0 and period_expense == 0 %}در این بازه هیچ پرداخت یا هزینه‌ای ثبت نشده است.{% else %}روی نقاط نمودار بروید تا مبلغ دقیق را ببینید.{% endif %}</div>
+<details class="chart-data-details">
+<summary>مشاهده داده‌های نمودار</summary>
+<table>
+<thead>
+<tr>
+<th>ماه میلادی</th>
+<th>درآمد (تومان)</th>
+<th>هزینه (تومان)</th>
+</tr>
+</thead>
+<tbody>{% for point in chart_data %}<tr>
+<td>{{ point.label }}</td>
+<td>{{ point.income|money }}</td>
+<td>{{ point.expense|money }}</td>
+</tr>{% endfor %}</tbody>
+</table>
+</details>
+</section>
+<section class="panel distribution">
+<div class="panel-heading">
+<div>
+<h2>ترکیب پروژه‌ها</h2>
+<p>دسته‌بندی پروژه‌های ثبت‌شده</p>
+</div>
+<a class="dots" href="/projects/" aria-label="مشاهده پروژه‌ها">↗</a>
+</div>
+<div class="donut" style="background:conic-gradient({{ donut_gradient }})">
+<div>
+<strong>{{ project_count|money }}</strong>
+<span>پروژه</span>
+</div>
+</div>
+<div class="distribution-legend">{% for category in categories %}<span>
+<i style="background:{{ category.color }}">
+</i>{{ category.category }} <small>({{ category.count|money }})</small>
+<strong>{{ category.percentage }}٪</strong>
+</span>{% empty %}<p class="empty">هنوز پروژه‌ای ثبت نشده است.</p>{% endfor %}</div>
+</section>
+</div>

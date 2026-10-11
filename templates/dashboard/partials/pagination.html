@@ -1,0 +1,4 @@
+{% load canopy_tags %}{% if page_obj %}<div class="table-footer">
+<span>{{ page_obj.paginator.count|money }} نتیجه · صفحه {{ page_obj.number|money }} از {{ page_obj.paginator.num_pages|money }}</span>
+<nav class="pagination" aria-label="صفحه‌بندی">{% if page_obj.has_previous %}<a class="button secondary compact" href="{% querystring page=page_obj.previous_page_number %}">قبلی</a>{% endif %}{% if page_obj.has_next %}<a class="button secondary compact" href="{% querystring page=page_obj.next_page_number %}">بعدی</a>{% endif %}</nav>
+</div>{% endif %}

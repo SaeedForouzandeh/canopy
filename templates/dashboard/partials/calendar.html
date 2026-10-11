@@ -1,0 +1,42 @@
+{% load canopy_tags %}
+<section class="panel">
+<div class="panel-heading">
+<div>
+<h2>تقویم کاری · {{ calendar_month }}</h2>
+<p>رویدادها و موعد پروژه‌ها و کارها · تاریخ میلادی · زمان تهران</p>
+</div>
+<div class="calendar-navigation">
+<a class="button secondary compact" href="?month={{ previous_month }}">ماه قبل</a>
+<a class="text-link" href="/calendar/">امروز</a>
+<a class="button secondary compact" href="?month={{ next_month }}">ماه بعد</a>
+</div>
+</div>
+<div class="calendar-grid">{% for name in 'شنبه,یکشنبه,دوشنبه,سه‌شنبه,چهارشنبه,پنجشنبه,جمعه'|weekdays %}<div class="calendar-weekday">{{ name }}</div>{% endfor %}{% for cell in calendar_cells %}<div class="calendar-day {% if not cell.in_month %}outside{% endif %} {% if cell.is_today %}today{% endif %}">
+<span>{{ cell.date.day }}</span>{% if perms.dashboard.add_event %}<a class="calendar-add" href="{% url 'record_create' 'event' %}?date={{ cell.date|date:'Y-m-d' }}" aria-label="ثبت رویداد {{ cell.date }}">+</a>{% endif %}{% for entry in cell.items %}{% if entry.kind == 'event' %}{% if perms.dashboard.change_event %}<a class="calendar-entry" href="{% url 'record_edit' 'event' entry.pk %}">{{ entry.time }} · {{ entry.title }}</a>{% else %}<span class="calendar-entry">{{ entry.time }} · {{ entry.title }}</span>{% endif %}{% elif entry.kind == 'project' %}<a class="calendar-entry gold-event" href="{% url 'project_detail' entry.pk %}">تحویل: {{ entry.title }}</a>{% elif entry.kind == 'invoice' %}<a class="calendar-entry gold-event" href="{% url 'invoice_detail' entry.pk %}">{{ entry.title }}</a>{% else %}<a class="calendar-entry" href="/tasks/">کار: {{ entry.title }}</a>{% endif %}{% endfor %}</div>{% endfor %}</div>
+<div class="panel-heading">
+<h2>رویدادهای این ماه</h2>
+</div>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>رویداد</th>
+<th>شروع</th>
+<th>پایان</th>
+<th>عملیات</th>
+</tr>
+</thead>
+<tbody>{% for event in events %}<tr>
+<td>{{ event.title }}<small class="table-subtitle">{{ event.description|truncatechars:100 }}</small>
+</td>
+<td>{{ event.start|date:'Y/m/d H:i' }}</td>
+<td>{{ event.end|date:'Y/m/d H:i' }}</td>
+<td>
+<div class="row-actions">{% if perms.dashboard.change_event %}<a href="{% url 'record_edit' 'event' event.pk %}">ویرایش</a>{% endif %}{% if perms.dashboard.delete_event %}<a class="danger-text" href="{% url 'record_delete' 'event' event.pk %}">حذف</a>{% endif %}</div>
+</td>
+</tr>{% empty %}<tr>
+<td colspan="4" class="empty">در این ماه رویدادی ثبت نشده است.</td>
+</tr>{% endfor %}</tbody>
+</table>
+</div>
+</section>

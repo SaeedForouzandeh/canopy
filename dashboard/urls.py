@@ -1,0 +1,31 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.page, name='overview'),
+    path('projects/new/', views.project_create, name='project_create'),
+    path('projects/<int:pk>/', views.project_detail, name='project_detail'),
+    path('projects/<int:pk>/status/', views.project_status, name='project_status'),
+    path('projects/<int:pk>/comments/', views.comment_create, name='comment_create'),
+    path('comments/<int:pk>/delete/', views.comment_delete, name='comment_delete'),
+    path('bulk/<slug:kind>/', views.bulk_update, name='bulk_update'),
+    path('search/', views.global_search, name='global_search'),
+    path('reports/export/', views.report_export, name='report_export'),
+    path('records/<slug:kind>/new/', views.record_form, name='record_create'),
+    path('records/<slug:kind>/<int:pk>/edit/', views.record_form, name='record_edit'),
+    path('records/<slug:kind>/<int:pk>/delete/', views.record_delete, name='record_delete'),
+    path('tasks/<int:pk>/toggle/', views.task_toggle, name='task_toggle'),
+    path('invoices/export/', views.invoice_export, name='invoice_export'),
+    path('invoices/<int:pk>/', views.invoice_detail, name='invoice_detail'),
+    path('invoices/<int:pk>/pay/', views.invoice_pay, name='invoice_pay'),
+    path('settings/', views.settings_view, name='settings'),
+    path('team/', views.team_view, name='team'),
+    path('preferences/update/', views.preference_update, name='preference_update'),
+    path('messages/', views.inbox, name='inbox'),
+    path('messages/poll/', views.message_poll, name='message_poll'),
+    path('messages/read/', views.message_read, name='message_read'),
+    path('notifications/', views.notifications_view, name='notifications'),
+    path('notifications/read/', views.notification_read, name='notifications_read_all'),
+    path('notifications/<int:pk>/read/', views.notification_read, name='notification_read'),
+    path('<slug:section>/', views.page, name='page'),
+]

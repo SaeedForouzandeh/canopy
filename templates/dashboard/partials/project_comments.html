@@ -1,0 +1,7 @@
+{% load canopy_tags %}
+<section class="panel detail-grid"><div class="panel-heading"><div><h2>یادداشت‌های تیم</h2><p>گفتگوی داخلی اعضای پروژه و کاربران دارای مجوز مدیریت</p></div></div>
+<div class="comments-body">{% if can_discuss %}
+{% for comment in comments_page %}<article class="project-comment"><div class="project-comment-header"><strong>{{ comment.author|display_name }}</strong><time>{{ comment.created_at|date:'Y/m/d H:i' }}</time>{% if comment.author_id == user.pk or perms.dashboard.delete_projectcomment %}<form method="post" action="{% url 'comment_delete' comment.pk %}" data-confirm="این یادداشت حذف شود؟">{% csrf_token %}<button class="text-button danger-text">حذف</button></form>{% endif %}</div><p class="project-comment-body">{{ comment.body }}</p></article>{% empty %}<p class="empty">هنوز یادداشتی ثبت نشده است.</p>{% endfor %}
+<nav class="pagination">{% if comments_page.has_previous %}<a class="button secondary compact" href="{% querystring comments_page=comments_page.previous_page_number %}">جدیدتر</a>{% endif %}{% if comments_page.has_next %}<a class="button secondary compact" href="{% querystring comments_page=comments_page.next_page_number %}">قدیمی‌تر</a>{% endif %}</nav>
+<form method="post" action="{% url 'comment_create' project.pk %}" class="form-fields comment-compose">{% csrf_token %}{{ comment_form.as_p }}<button class="button primary">ثبت یادداشت</button></form>
+{% else %}<p class="empty">یادداشت‌ها فقط برای اعضای این پروژه و مدیران در دسترس‌اند.</p>{% endif %}</div></section>

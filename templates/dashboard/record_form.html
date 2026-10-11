@@ -1,0 +1,15 @@
+{% extends 'dashboard/base.html' %}{% block content %}<div class="page-heading">
+<div>
+<div class="eyebrow">MAKE ROOM FOR YOUR NEXT IDEA</div>
+<h1>{{ title }}</h1>
+<p>اطلاعات شما پس از اعتبارسنجی در دیتابیس ذخیره می‌شود.</p>
+</div>
+</div>
+<section class="panel settings-panel">
+<form method="post" class="form-fields">{% csrf_token %}{{ form.as_p }}<p class="form-help">برای انتخاب چند عضو، کلید Ctrl یا ⌘ را نگه دارید. تاریخ‌ها میلادی هستند.</p>
+<div class="component-row">
+<button class="button primary">ذخیره اطلاعات</button>
+<a class="button secondary" href="{% url 'page' section %}">انصراف</a>
+</div>
+</form>
+</section>{% endblock %}

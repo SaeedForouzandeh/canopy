@@ -1,0 +1,52 @@
+{% extends 'admin/index.html' %}{% load canopy_tags %}
+{% block content %}
+<section class="admin-overview" aria-label="آمار زنده فضای کار">
+<div class="admin-intro">
+<span>WISELAND STUDIO / WORKSPACE</span>
+<h2>همه‌چیز، در یک نمای روشن.</h2>
+<p>این آمار مستقیماً از اطلاعات ثبت‌شده شما محاسبه می‌شود.</p>
+</div>
+<div class="admin-stats">
+<a href="{% url 'admin:dashboard_project_changelist' %}">
+<small>پروژه‌ها</small>
+<strong>{{ summary.project_count|money }}</strong>
+<span>{{ summary.active_count|money }} پروژه فعال</span>
+</a>
+<a href="{% url 'admin:dashboard_invoice_changelist' %}">
+<small>وصول‌شده · تومان</small>
+<strong>{{ summary.paid_total|money }}</strong>
+<span>{{ summary.invoice_count|money }} صورتحساب</span>
+</a>
+<a href="{% url 'admin:dashboard_expense_changelist' %}">
+<small>هزینه‌ها · تومان</small>
+<strong>{{ summary.expense_total|money }}</strong>
+<span>مجموع هزینه‌های ثبت‌شده</span>
+</a>
+<a href="{% url 'admin:dashboard_task_changelist' %}">
+<small>کارهای باز</small>
+<strong>{{ summary.open_task_count|money }}</strong>
+<span>{{ summary.completed_task_count|money }} کار تکمیل شده</span>
+</a>
+</div>
+</section>
+{{ block.super }}
+<section class="admin-activity module">
+<h2>آخرین فعالیت‌های فضای کار</h2>
+<table>
+<thead>
+<tr>
+<th>فعالیت</th>
+<th>کاربر</th>
+<th>زمان</th>
+</tr>
+</thead>
+<tbody>{% for activity in recent_activities %}<tr>
+<td>{{ activity.description }}</td>
+<td>{{ activity.actor|default:'کاربر حذف شده' }}</td>
+<td>{{ activity.created_at|date:'Y/m/d H:i' }}</td>
+</tr>{% empty %}<tr>
+<td colspan="3">هنوز فعالیتی در داشبورد ثبت نشده است.</td>
+</tr>{% endfor %}</tbody>
+</table>
+</section>
+{% endblock %}

@@ -1,0 +1,7 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% block title %}{{ title }} | Canopy{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static 'css/admin.css' %}">{% endblock %}
+{% block branding %}<a class="admin-brand" href="{% url 'admin:index' %}">✳ CANOPY <small>by Wiseland Studio</small>
+</a>{% endblock %}
+{% block nav-global %}<a class="dashboard-link" href="/">مشاهده داشبورد ↗</a>{% endblock %}

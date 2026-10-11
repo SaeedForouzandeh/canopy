@@ -1,0 +1,54 @@
+{% load canopy_tags %}<section class="stats-grid" aria-label="آمار زنده فضای کار">
+<article class="stat-card">
+<div class="stat-top">درآمد وصول‌شده<span class="stat-icon">
+<svg>
+<use href="#chart"/>
+</svg>
+</span>
+</div>
+<div class="stat-value">{{ paid_total|money }} <small>تومان</small>
+</div>
+<div class="stat-bottom">
+<span class="trend">پرداخت‌های ثبت‌شده</span>
+<a href="/invoices/?status=paid">مشاهده ←</a>
+</div>
+</article>
+<article class="stat-card">
+<div class="stat-top">پروژه‌های فعال<span class="stat-icon">
+<svg>
+<use href="#folder"/>
+</svg>
+</span>
+</div>
+<div class="stat-value">{{ active_count|money }} <small>پروژه</small>
+</div>
+<div class="stat-bottom">
+<span>از {{ project_count|money }} پروژه</span>{% if overdue_projects %}<a class="trend amber" href="/projects/?overdue=1">{{ overdue_projects|money }} مورد عقب‌افتاده</a>{% else %}<span class="trend">بدون پروژه عقب‌افتاده</span>{% endif %}</div>
+</article>
+<article class="stat-card">
+<div class="stat-top">مبالغ در انتظار<span class="stat-icon gold-icon">
+<svg>
+<use href="#file"/>
+</svg>
+</span>
+</div>
+<div class="stat-value">{{ pending_total|money }} <small>تومان</small>
+</div>
+<div class="stat-bottom">
+<a href="/invoices/?status=pending">صورتحساب‌های پرداخت‌نشده ←</a>{% if overdue_invoices %}<span class="trend amber">{{ overdue_invoices|money }} معوق</span>{% endif %}</div>
+</article>
+<article class="stat-card">
+<div class="stat-top">کارهای باز<span class="stat-icon">
+<svg>
+<use href="#grid"/>
+</svg>
+</span>
+</div>
+<div class="stat-value">{{ open_task_count|money }} <small>کار</small>
+</div>
+<div class="stat-bottom">
+<span>{{ completed_task_count|money }} کار تکمیل شده</span>
+<a href="/tasks/">مشاهده ←</a>
+</div>
+</article>
+</section>

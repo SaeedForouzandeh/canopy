@@ -1,0 +1,15 @@
+<form method="get" class="filters-bar">{% if project_layout == 'board' %}<input type="hidden" name="layout" value="board">{% endif %}
+<label class="sr-only" for="record-search">جستجو</label>
+<input id="record-search" name="q" placeholder="جستجو در {{ title }}…" value="{{ query }}">
+<label class="sr-only" for="record-status">وضعیت</label>{% if section != 'expenses' %}<select id="record-status" name="status">
+<option value="">همه وضعیت‌ها</option>{% if section == 'projects' %}<option value="active" {% if selected_status == 'active' %}selected{% endif %}>در حال انجام</option>
+<option value="review" {% if selected_status == 'review' %}selected{% endif %}>در انتظار بررسی</option>
+<option value="done" {% if selected_status == 'done' %}selected{% endif %}>تکمیل شده</option>{% elif section == 'invoices' %}<option value="paid" {% if selected_status == 'paid' %}selected{% endif %}>پرداخت شده</option>
+<option value="pending" {% if selected_status == 'pending' %}selected{% endif %}>در انتظار</option>{% elif section == 'tasks' %}<option value="open" {% if selected_status == 'open' %}selected{% endif %}>باز</option>
+<option value="done" {% if selected_status == 'done' %}selected{% endif %}>تکمیل شده</option>{% endif %}</select>{% endif %}<label class="sr-only" for="record-sort">مرتب‌سازی</label>
+<select id="record-sort" name="sort">
+<option value="recent" {% if selected_sort == 'recent' %}selected{% endif %}>جدیدترین</option>
+<option value="name" {% if selected_sort == 'name' %}selected{% endif %}>نام</option>{% if section == 'projects' or section == 'tasks' or section == 'invoices' %}<option value="due" {% if selected_sort == 'due' %}selected{% endif %}>موعد</option>{% endif %}{% if section == 'projects' %}<option value="budget" {% if selected_sort == 'budget' %}selected{% endif %}>بیشترین بودجه</option>{% elif section == 'invoices' or section == 'expenses' %}<option value="amount" {% if selected_sort == 'amount' %}selected{% endif %}>بیشترین مبلغ</option>{% endif %}</select>{% if section != 'expenses' %}<label class="filter-check">
+<input type="checkbox" name="overdue" value="1" {% if request.GET.overdue == '1' %}checked{% endif %}>عقب‌افتاده‌ها</label>{% endif %}<button class="button primary">جستجو</button>
+<a class="text-link" href="{{ request.path }}">پاک کردن فیلتر</a>
+</form>

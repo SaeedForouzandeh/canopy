@@ -1,0 +1,12 @@
+{% extends 'dashboard/base.html' %}{% block content %}<div class="page-heading">
+<div>
+<h1>{{ title }}</h1>
+</div>
+</div>
+<section class="panel settings-panel">
+<h2>«{{ record }}» حذف شود؟</h2>
+<p>این عملیات رکورد را حذف می‌کند. در حذف پروژه، صورتحساب‌ها و کارهای مرتبط حفظ می‌شوند و ارتباط آن‌ها با پروژه حذف می‌شود.</p>
+<form method="post" class="component-row">{% csrf_token %}<button class="button danger">تأیید حذف</button>
+<a class="button secondary" href="{% url 'page' section %}">انصراف</a>
+</form>
+</section>{% endblock %}

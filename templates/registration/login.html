@@ -1,0 +1,37 @@
+{% load static %}<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ورود · Canopy</title>
+<link rel="stylesheet" href="{% static 'css/canopy.css' %}">
+</head>
+<body class="login-page">
+<div class="login-art">
+<a class="brand" href="/">
+<span class="brand-mark">✳</span>
+<span class="brand-word">canopy<span>BY WISELAND STUDIO</span>
+</span>
+</a>
+<div>
+<span class="eyebrow">A SPACE FOR YOUR NEXT BIG IDEA</span>
+<h1>به ایده‌هایتان<br>فضای رشد بدهید.</h1>
+<p>ساخته شده برای خلق کردن، همکاری و یک شروع متفاوت.</p>
+<span class="login-star">✳</span>
+</div>
+<small>FREE DJANGO DASHBOARD TEMPLATE</small>
+</div>
+<main class="login-main">
+<section>
+<span class="eyebrow">WELCOME TO CANOPY</span>
+<h1>خوش آمدید.</h1>
+<p>برای مدیریت فضای کاری خود وارد شوید.</p>
+<form method="post" class="form-fields">{% csrf_token %}{{ form.as_p }}{% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}<button class="button primary">ورود به فضای کار ←</button>
+</form>
+<p class="demo-note">حساب کاربری را با دستور createsuperuser بسازید.</p>
+<a class="text-link" href="/">مشاهده داشبورد عمومی ←</a>
+<div class="login-credit">CANOPY · BY WISELAND STUDIO</div>
+</section>
+</main>
+</body>
+</html>

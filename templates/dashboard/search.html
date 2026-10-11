@@ -1,0 +1,5 @@
+{% extends 'dashboard/base.html' %}{% load canopy_tags %}{% block content %}
+<div class="page-heading"><div><div class="eyebrow">FIND YOUR NEXT STEP</div><h1>جستجوی سراسری</h1><p>پروژه‌ها، صورتحساب‌ها، کارها، هزینه‌ها و رویدادها</p></div></div>
+<form method="get" class="filters-bar"><input type="search" name="q" value="{{ query }}" placeholder="عبارت موردنظر را بنویسید…" required aria-label="جستجوی سراسری"><button class="button primary">جستجو</button></form>
+<div class="search-results">{% for group in results %}<section class="panel"><div class="panel-heading"><h2>{{ group.title }} <span class="count-badge">{{ group.count|money }}</span></h2><small class="muted">حداکثر ۱۰ نتیجه در هر بخش</small></div>{% for result in group.rows %}<a class="search-result" href="{{ result.url }}"><span>{{ result.record }}</span><span>مشاهده ←</span></a>{% empty %}<div class="empty">نتیجه‌ای پیدا نشد.</div>{% endfor %}</section>{% empty %}<section class="panel empty">برای شروع، عبارت جستجو را وارد کنید.</section>{% endfor %}</div>
+{% endblock %}
